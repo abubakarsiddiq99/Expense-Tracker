@@ -1,0 +1,86 @@
+import json
+import matplotlib.pyplot as plt
+
+exp = []  
+cat = []  
+amount = 0  
+cat_exp = {} 
+
+while True:
+    print("\nChoose your option:")
+    choose = int(input(" 1: To add expenses \n 2: To view all expenses \n 3: Total expenses \n 4: Generate Charts \n 5: Save and Exit\n"))
+
+    if choose == 1:
+        print("Enter your expenses")
+        while True:
+            print("Choose your option")
+            options = int(input(" 1: To add amount \n 2: Back\n"))
+            if options == 1:
+                expense = int(input("Enter the amount in rupees: "))
+                category = input("Enter the amount category: ")
+                amount += expense  
+
+                if category in cat_exp:
+                    cat_exp[category].append(expense)
+                else:
+                    cat_exp[category] = [expense]
+
+                print(f"Expense added: {expense} in {category}")
+            elif options == 2:
+                break
+            else:
+                print("Invalid option you chose, try again")
+
+    elif choose == 2:
+        print("See your expense")
+        print("Your inserted expenses by category:")
+        for category, expenses in cat_exp.items():
+            print(f"{category}: {expenses}")
+
+    elif choose == 3:
+        print("Your total expenses:", amount)
+
+    elif choose == 4:
+        print("\nChoose the chart type:")
+        graph = int(input(" 1: Pie Chart \n 2: Bar Chart \n 3: Line Chart\n"))
+
+        categories = list(cat_exp.keys())
+        amounts = [sum(cat_exp[category]) for category in categories]
+
+        if graph == 1:
+            # Pie Chart
+            plt.figure(figsize=(6, 6))
+            plt.pie(amounts, labels=categories, autopct='%1.1f%%', startangle=140)
+            plt.title("Expense Distribution by Category")
+            plt.show()
+        elif graph == 2:
+            # Bar Chart
+            plt.figure(figsize=(8, 5))
+            plt.bar(categories, amounts, color='skyblue')
+            plt.xlabel("Categories")
+            plt.ylabel("Total Amount")
+            plt.title("Expense Distribution by Category")
+            plt.show()
+        elif graph == 3:
+            # Line Chart
+            plt.figure(figsize=(8, 5))
+            plt.plot(categories, amounts, marker='o', linestyle='-', color='green')
+            plt.xlabel("Categories")
+            plt.ylabel("Total Amount")
+            plt.title("Expense Trend by Category")
+            plt.grid(True)
+            plt.show()
+        else:
+            print("Invalid chart type, please try again.")
+
+    elif choose == 5:
+        print("Save and Exit")
+        # Optionally save the data to a file
+        with open("expenses.json", "w") as file:
+            json.dump(cat_exp, file)
+        break
+
+    else:
+        print("Invalid choice, please try again")
+
+print("Final expenses by category:", cat_exp)
